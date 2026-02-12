@@ -99,8 +99,24 @@ def depthFirstSearch(problem:SearchProblem)->List[Direction]:
     '''
         INSÉREZ VOTRE SOLUTION À LA QUESTION 1 ICI
     '''
+    s = problem.getStartState()
+    visited = set()
+    fringe = util.Stack() # LIFO for DFS
+    fringe.push((s, []))
+    while not fringe.isEmpty():
+        position, path = fringe.pop()
+        if position in visited:
+            continue
+        visited.add(position)
+        if problem.isGoalState(position):
+            return path
+        successors = problem.getSuccessors(position)
+        for successor in successors:
+            if successor[0] not in visited:
+                fringe.push((successor[0], path + [successor[1]]))
 
     util.raiseNotDefined()
+
 
 
 def breadthFirstSearch(problem:SearchProblem)->List[Direction]:
@@ -110,8 +126,26 @@ def breadthFirstSearch(problem:SearchProblem)->List[Direction]:
     '''
         INSÉREZ VOTRE SOLUTION À LA QUESTION 2 ICI
     '''
+    s = problem.getStartState()
+    visited = set()
+    fringe = util.Queue() # FIFO for BFS
+    fringe.push((s, []))
+    while not fringe.isEmpty():
+        position, path = fringe.pop()  
+        if position in visited: # if the current node is already visited, skip iteration
+            continue
+        visited.add(position)
+        if problem.isGoalState(position):
+            return path
+        
+        successors = problem.getSuccessors(position)
+        for successor in successors:
+            if successor[0] not in visited:
+                fringe.push((successor[0], path + [successor[1]]))
 
     util.raiseNotDefined()
+
+
 
 def uniformCostSearch(problem:SearchProblem)->List[Direction]:
     """Search the node of least total cost first."""
@@ -120,8 +154,27 @@ def uniformCostSearch(problem:SearchProblem)->List[Direction]:
     '''
         INSÉREZ VOTRE SOLUTION À LA QUESTION 3 ICI
     '''
+    s = problem.getStartState()
+    visited = set()
+    fringe = util.PriorityQueue() # PQ for UCS
+    fringe.push((s, [], 0), 0)
+    while not fringe.isEmpty():
+        position, path, cost = fringe.pop() # Lowest cost is popped
+        if position in visited:
+            continue
+        visited.add(position)
+        if problem.isGoalState(position):
+            return path
+        
+        successors = problem.getSuccessors(position)
+        for successor in successors:
+            if successor[0] not in visited:
+                # PQ expects tuple + priority as params
+                fringe.push((successor[0], path + [successor[1]], cost + successor[2]), cost + successor[2])
 
     util.raiseNotDefined()
+
+
 
 def nullHeuristic(state:GameState, problem:SearchProblem=None)->List[Direction]:
     """

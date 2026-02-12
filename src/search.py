@@ -188,6 +188,24 @@ def aStarSearch(problem:SearchProblem, heuristic=nullHeuristic)->List[Direction]
     '''
         INSÉREZ VOTRE SOLUTION À LA QUESTION 4 ICI
     '''
+    s = problem.getStartState()
+    visited = set()
+    fringe = util.PriorityQueue() # PQ for A*
+    fringe.push((s, [], 0), 0)
+    while not fringe.isEmpty():
+        position, path, cost = fringe.pop()
+        if position in visited:
+            continue
+        visited.add(position)
+        if problem.isGoalState(position):
+            return path
+
+        successors = problem.getSuccessors(position)
+        for successor in successors:
+            if successor[0] not in visited:
+                updated_cost = cost + successor[2] # g(n)
+                priority = updated_cost + heuristic(successor[0], problem)# f(n) = g(n) + h(n)
+                fringe.update((successor[0], path + [successor[1]], updated_cost), priority)
 
     util.raiseNotDefined()
 

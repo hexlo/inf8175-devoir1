@@ -43,6 +43,7 @@ from game import Actions
 import util
 import time
 import search
+import itertools
 
 class GoWestAgent(Agent):
     "An agent that goes West until it can't."
@@ -425,8 +426,43 @@ def cornersHeuristic(state, problem):
     '''
         INSÉREZ VOTRE SOLUTION À LA QUESTION 6 ICI
     '''
+
+    '''
+    We can :
+    1. Find nearest unvisited corner
+    2. Set current position to that corner
+    3. Find the next nearest unvisited corner
+    4. and to on, until we reach the goal state.
+    5. Return the accumulated distance.
+
+
+    Better yet:
+    1. take all the possible permutations of unvisited corners.
+    2. For each permutation, calculate the distance it takes to go through each corner.
+    3. Take the best permutation (shortest distance).
+    4. Return the total distance.
+    '''
+
+    position, cornersState = state
+    unvisited = []
+    for i in range(len(corners)):
+        if cornersState[i]:
+            unvisited.append(corners[i])
+
+    if not unvisited:
+        return 0
     
-    return 0
+    best_dist = int(999999)
+    for p in itertools.permutations(unvisited):
+        current_dist = 0
+        current_pos = position
+        for corner in p:
+            current_dist += util.manhattanDistance(current_pos, corner)
+            current_pos = corner
+        if current_dist < best_dist:
+            best_dist = current_dist
+            
+    return best_dist
 
 class AStarCornersAgent(SearchAgent):
     "A SearchAgent for FoodSearchProblem using A* and your foodHeuristic"

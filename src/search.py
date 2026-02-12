@@ -143,8 +143,6 @@ def breadthFirstSearch(problem:SearchProblem)->List[Direction]:
             if successor[0] not in visited:
                 fringe.push((successor[0], path + [successor[1]]))
 
-    util.raiseNotDefined()
-
 
 
 def uniformCostSearch(problem:SearchProblem)->List[Direction]:
@@ -203,9 +201,9 @@ def aStarSearch(problem:SearchProblem, heuristic=nullHeuristic)->List[Direction]
         successors = problem.getSuccessors(position)
         for successor in successors:
             if successor[0] not in visited:
-                updated_cost = cost + successor[2] # g(n)
-                priority = updated_cost + heuristic(successor[0], problem)# f(n) = g(n) + h(n)
-                fringe.update((successor[0], path + [successor[1]], updated_cost), priority)
+                costFn = cost + successor[2] # g(n)
+                priorityFn = costFn + heuristic(successor[0], problem)# f(n) = g(n) + h(n)
+                fringe.update((successor[0], path + [successor[1]], costFn), priorityFn)
 
     util.raiseNotDefined()
 

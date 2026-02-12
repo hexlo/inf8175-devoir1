@@ -295,6 +295,41 @@ class CornersProblem(search.SearchProblem):
             INSÉREZ VOTRE SOLUTION À LA QUESTION 5 ICI
         '''
 
+        ''' 
+        States: 
+
+        top left corner hasFood: true or false
+        top right corner hasFood: true or false
+        bottom right corner hasFood: true or false
+        bottom left corner hasFood: true or false
+
+        all the possible positions in the maze: (x,y)
+
+        
+        position = (x,y)
+        cornersState = (true, true, true, true)
+        state = (position, cornersState)
+
+        ### Number of states = x * y * 2^4 (upper bound because we are are assuming there is no walls)
+
+        goalState = (false, false, false, false)
+      
+        cornersState[0] -> (1,1)
+        cornersState[1] -> (1,top)
+        cornersState[2] -> (right,1)
+        cornersState[3] -> (right,top)
+        '''
+        # Check if the starting position is already on one of the corners
+        startCorners = []
+        for corner in self.corners:
+            if self.startingPosition == corner:
+                startCorners.append(False) # Already visited
+            else:
+                startCorners.append(True)  # Not visited yet
+        
+        self.startState = (self.startingPosition, tuple(startCorners))
+        self.goalState = (False, False, False, False)
+
 
     def getStartState(self):
         """
@@ -305,8 +340,8 @@ class CornersProblem(search.SearchProblem):
         '''
             INSÉREZ VOTRE SOLUTION À LA QUESTION 5 ICI
         '''
-        
-        util.raiseNotDefined()
+        return self.startState
+    
 
     def isGoalState(self, state):
         """
@@ -316,8 +351,8 @@ class CornersProblem(search.SearchProblem):
         '''
             INSÉREZ VOTRE SOLUTION À LA QUESTION 5 ICI
         '''
-
-        util.raiseNotDefined()
+        return state[1] == self.goalState
+    
 
     def getSuccessors(self, state):
         """
@@ -342,8 +377,19 @@ class CornersProblem(search.SearchProblem):
             '''
                 INSÉREZ VOTRE SOLUTION À LA QUESTION 5 ICI
             '''
-
-
+            currentPosition, cornersState = state
+            x,y = currentPosition
+            dx, dy = Actions.directionToVector(action)
+            nextx, nexty = int(x + dx), int(y + dy)
+            hitsWall = self.walls[nextx][nexty]
+            if not hitsWall:
+                for i, corner in enumerate(self.corners):
+                    if nextx == corner[0] and nexty == corner[1]: # We hit a corner: set the matching index of cornersState to false
+                        if cornersState[i] == True: # Only modify if we actually need to update. Keeps the memory and speed advantages of tuples. Only updates at most 4 times
+                            cornersList = list(cornersState)
+                            cornersList[i] = False
+                            cornersState = tuple(cornersList)
+                successors.append((((nextx,nexty), cornersState), action, 1))
         self._expanded += 1 # DO NOT CHANGE
         return successors
 
@@ -480,4 +526,3 @@ def foodHeuristic(state, problem: FoodSearchProblem):
 
 
     return 0
-

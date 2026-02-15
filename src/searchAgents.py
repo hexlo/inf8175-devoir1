@@ -593,13 +593,13 @@ def foodHeuristic(state, problem: FoodSearchProblem):
     min_dist = 0
     
     while not fringe.isEmpty():
-        curr_pos, dist = fringe.pop()
-        if foodGrid[curr_pos[0]][curr_pos[1]]:
+        (x,y), dist = fringe.pop()
+        if foodGrid[x][y]:
             min_dist = dist
             break
-        
-        for dx, dy in [(0,1), (0,-1), (1,0), (-1,0)]:
-            nextx, nexty = int(curr_pos[0] + dx), int(curr_pos[1] + dy)
+        for direction in [Directions.NORTH, Directions.SOUTH, Directions.EAST, Directions.WEST]: 
+            dx, dy = Actions.directionToVector(direction)
+            nextx, nexty = int(x + dx), int(y + dy)
             if not problem.walls[nextx][nexty] and (nextx, nexty) not in visited:
                 visited.add((nextx, nexty))
                 fringe.push(((nextx, nexty), dist + 1))

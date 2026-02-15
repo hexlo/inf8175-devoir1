@@ -11,6 +11,13 @@
 # Student side autograding was added by Brad Miller, Nick Hay, and
 # Pieter Abbeel (pabbeel@cs.berkeley.edu).
 
+########## INF8175 - Devoir 1 - Hiver 2026 ##########
+# ---------------------------------------------------
+# Noms et Matricules
+#
+# Albert darchicourt Cisse   2471152
+# Charles Jobin Fauvel       1896074
+
 
 """
 In search.py, you will implement generic search algorithms which are called by
@@ -143,7 +150,7 @@ def breadthFirstSearch(problem:SearchProblem)->List[Direction]:
             if successor[0] not in visited:
                 fringe.push((successor[0], path + [successor[1]]))
 
-
+    util.raiseNotDefined()
 
 def uniformCostSearch(problem:SearchProblem)->List[Direction]:
     """Search the node of least total cost first."""

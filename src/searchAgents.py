@@ -11,6 +11,13 @@
 # Student side autograding was added by Brad Miller, Nick Hay, and
 # Pieter Abbeel (pabbeel@cs.berkeley.edu).
 
+########## INF8175 - Devoir 1 - Hiver 2026 ##########
+# ---------------------------------------------------
+# Noms et Matricules
+#
+# Albert darchicourt Cisse   2471152
+# Charles Jobin Fauvel       1896074
+
 
 """
 This file contains all of the agents that can be selected to control Pacman.  To
@@ -305,7 +312,6 @@ class CornersProblem(search.SearchProblem):
         bottom left corner hasFood: true or false
 
         all the possible positions in the maze: (x,y)
-
         
         position = (x,y)
         cornersState = (true, true, true, true)
@@ -581,7 +587,7 @@ def foodHeuristic(state, problem: FoodSearchProblem):
     while not fringe.isEmpty():
         (x,y), dist = fringe.pop()
         visited.add((x, y))
-        if foodGrid[x][y]: # Goal reached
+        if foodGrid[x][y]: # Goal state
             min_dist = dist
             break
         for direction in [Directions.NORTH, Directions.SOUTH, Directions.EAST, Directions.WEST]: 

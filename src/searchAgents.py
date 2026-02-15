@@ -560,5 +560,72 @@ def foodHeuristic(state, problem: FoodSearchProblem):
         INSÉREZ VOTRE SOLUTION À LA QUESTION 7 ICI
     '''
 
+    '''
+    Find the nearest unvisited food
+    '''
+    # if foodGrid.count() == 0:
+    #     return 0
+    # else:
+    #     unvisited = foodGrid.asList()
+    #     best_dist = int(999999)
+    #     for pos in unvisited:
+    #         dist = util.manhattanDistance(position, pos)
+    #         if dist < best_dist:
+    #             best_dist = dist
+    #     return best_dist
 
-    return 0
+    '''
+    1. Pacman must travel to the nearest food dot (at least min_dist).
+    2. Pacman must also travel between all the food dots to eat them. The minimum cost to connect all food dots is the weight of their MST.
+    3. Therefore, h(n) = distance_to_nearest_food + MST_of_remaining_food is a tight, admissible lower bound.
+
+    Changed min distance calculation from manhattan distance to BFS taking walls into account (Maze Distance).
+    '''
+    foodList = foodGrid.asList()
+    if not foodList:
+        return 0
+    
+    # Maze Distance to the closest food (BFS)
+    fringe = util.Queue()
+    fringe.push((position, 0))
+    visited = set()
+    visited.add(position)
+    min_dist = 0
+    
+    while not fringe.isEmpty():
+        curr_pos, dist = fringe.pop()
+        if foodGrid[curr_pos[0]][curr_pos[1]]:
+            min_dist = dist
+            break
+        
+        for dx, dy in [(0,1), (0,-1), (1,0), (-1,0)]:
+            nextx, nexty = int(curr_pos[0] + dx), int(curr_pos[1] + dy)
+            if not problem.walls[nextx][nexty] and (nextx, nexty) not in visited:
+                visited.add((nextx, nexty))
+                fringe.push(((nextx, nexty), dist + 1))
+    
+    # MST of the food
+    mst_weight = 0
+    if len(foodList) > 1:
+        unvisited = foodList[:]
+        start_node = unvisited.pop(0)
+        current_dists = [util.manhattanDistance(start_node, f) for f in unvisited]
+        
+        while unvisited:
+            best_dist = float('inf')
+            best_idx = -1
+            for i, d in enumerate(current_dists):
+                if d < best_dist:
+                    best_dist = d
+                    best_idx = i
+            
+            mst_weight += best_dist
+            new_node = unvisited.pop(best_idx)
+            current_dists.pop(best_idx)
+            
+            for i, f in enumerate(unvisited):
+                d = util.manhattanDistance(new_node, f)
+                if d < current_dists[i]:
+                    current_dists[i] = d
+                    
+    return min_dist + mst_weight

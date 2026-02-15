@@ -561,20 +561,6 @@ def foodHeuristic(state, problem: FoodSearchProblem):
     '''
 
     '''
-    Find the nearest unvisited food
-    '''
-    # if foodGrid.count() == 0:
-    #     return 0
-    # else:
-    #     unvisited = foodGrid.asList()
-    #     best_dist = int(999999)
-    #     for pos in unvisited:
-    #         dist = util.manhattanDistance(position, pos)
-    #         if dist < best_dist:
-    #             best_dist = dist
-    #     return best_dist
-
-    '''
     1. Pacman must travel to the nearest food dot (at least min_dist).
     2. Pacman must also travel between all the food dots to eat them. The minimum cost to connect all food dots is the weight of their MST.
     3. Therefore, h(n) = distance_to_nearest_food + MST_of_remaining_food is a tight, admissible lower bound.
@@ -594,14 +580,14 @@ def foodHeuristic(state, problem: FoodSearchProblem):
     
     while not fringe.isEmpty():
         (x,y), dist = fringe.pop()
-        if foodGrid[x][y]:
+        visited.add((x, y))
+        if foodGrid[x][y]: # Goal reached
             min_dist = dist
             break
         for direction in [Directions.NORTH, Directions.SOUTH, Directions.EAST, Directions.WEST]: 
             dx, dy = Actions.directionToVector(direction)
             nextx, nexty = int(x + dx), int(y + dy)
             if not problem.walls[nextx][nexty] and (nextx, nexty) not in visited:
-                visited.add((nextx, nexty))
                 fringe.push(((nextx, nexty), dist + 1))
     
     # MST of the food
